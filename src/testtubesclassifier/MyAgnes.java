@@ -87,7 +87,7 @@ public class MyAgnes extends AbstractClusterer{
             //System.out.println(item.dist + " " + item.index_i + " " + item.index_j);
             if (dsu.find(item.index_i) != dsu.find(item.index_j)) {
                 dsu.merge(item.index_i, item.index_j);
-                System.out.println("merge " + item.index_i + " " + item.index_j + " " + dsu.getSize(item.index_i));
+                //System.out.println("merge " + item.index_i + " " + item.index_j + " " + dsu.getSize(item.index_i));
                 clusterNow--;
             }
             if (clusterNow <= numberCluster) break;
