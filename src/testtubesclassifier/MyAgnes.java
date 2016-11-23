@@ -21,6 +21,7 @@ public class MyAgnes extends AbstractClusterer{
     private int numberCluster;
     private Instances finalCluster;
     private Node DendogramRoot = null;
+    private DisjoinSetUnion dsu = null;
     
     private class Item implements Comparable<Item> {
         double dist;
@@ -80,20 +81,45 @@ public class MyAgnes extends AbstractClusterer{
         }
         Collections.sort(edges);
         
-        DisjoinSetUnion dsu = new DisjoinSetUnion(finalCluster.numInstances());
+        dsu = new DisjoinSetUnion(finalCluster.numInstances());
         int clusterNow = finalCluster.numInstances();
         for (Item item : edges) {
             //System.out.println(item.dist + " " + item.index_i + " " + item.index_j);
             if (dsu.find(item.index_i) != dsu.find(item.index_j)) {
                 dsu.merge(item.index_i, item.index_j);
+                System.out.println("merge " + item.index_i + " " + item.index_j + " " + dsu.getSize(item.index_i));
                 clusterNow--;
             }
             if (clusterNow <= numberCluster) break;
         }
-        
+    }
+
+    @Override
+    public int numberOfClusters() throws Exception {
+        return numberCluster;
+    }
+
+    public void printClusterResult(){
         boolean[] done = new boolean[finalCluster.numInstances()];
         int[] ptCluster = new int[finalCluster.numInstances()];
         int pt = 0;
+        for (int i = 0; i < finalCluster.numInstances(); i++) {
+            int root = dsu.find(i);
+            if (!done[root]) {
+                done[root] = true;
+                ptCluster[root] = pt++;
+            }
+            finalCluster.instance(i).setValue(finalCluster.numAttributes()-1, String.valueOf(ptCluster[root]));
+        }
+        for (Instance i : finalCluster){
+            //System.out.println(i.toString());
+        }
+        System.out.println("Dendogram :");
+        printTree(DendogramRoot, "|____");
+        System.out.println("");
+        
+        done = new boolean[finalCluster.numInstances()];
+        pt = 0;
         for (int i = 0; i < finalCluster.numInstances(); i++) {
             int root = dsu.find(i);
             if (!done[root]) {
@@ -104,23 +130,6 @@ public class MyAgnes extends AbstractClusterer{
                 System.out.println(String.format("Cluster %d: %.2f%% (%d/%d)", pt++, percent, size, finalCluster.numInstances()));
             }
         }
-        for (int i = 0; i < finalCluster.numInstances(); i++) {
-            int root = dsu.find(i);
-            finalCluster.instance(i).setValue(finalCluster.numAttributes()-1, String.valueOf(ptCluster[root]));
-        }
-    }
-
-    @Override
-    public int numberOfClusters() throws Exception {
-        return numberCluster;
-    }
-
-    public void printClusterResult(){
-        for (Instance i : finalCluster){
-            System.out.println(i.toString());
-        }
-        System.out.println("Dendogram :");
-        printTree(DendogramRoot, "|____");
     }
     
      

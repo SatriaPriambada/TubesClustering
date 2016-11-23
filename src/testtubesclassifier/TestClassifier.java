@@ -29,11 +29,14 @@ public class TestClassifier {
         Scanner sc = new Scanner(System.in);
         String input = sc.nextLine();
         
+        System.out.println("Enter number of cluster");
+        int numCluster = Integer.parseInt(sc.nextLine());
+        
         int correctPrediction = 0;
         double accuracy = 0.0f;
 
         // Training
-        DataSource dt = new DataSource("weather.numeric.arff");
+        DataSource dt = new DataSource("iris.2D.arff");
         Instances trainDataset = dt.getDataSet();
         trainDataset.setClassIndex(trainDataset.numAttributes()-1);
 
@@ -45,11 +48,11 @@ public class TestClassifier {
         String[] options = new String[40];
         options[0] = "-t dt";
         if (input.equals("myKMeans")){
-            MyKmeans classifierKMeans = new MyKmeans(2);
+            MyKmeans classifierKMeans = new MyKmeans(numCluster);
             classifierKMeans.buildClusterer(trainDataset);
             classifierKMeans.printClusterResult();
         } else if (input.equals("myAgnes")){
-            MyAgnes classifierAgnes = new MyAgnes(2);
+            MyAgnes classifierAgnes = new MyAgnes(numCluster);
             classifierAgnes.buildClusterer(trainDataset);
             classifierAgnes.printClusterResult();
         }
