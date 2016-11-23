@@ -20,8 +20,9 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 public class MyAgnes extends AbstractClusterer{
     private int numberCluster;
     private Instances finalCluster;
-    private Node DendogramRoot = null;
+    private Node root = null;
     private DisjoinSetUnion dsu = null;
+    private Node[] ori = null;
     
     private class Item implements Comparable<Item> {
         double dist;
@@ -57,8 +58,6 @@ public class MyAgnes extends AbstractClusterer{
         finalCluster = instances;
         
         getCapabilities().testWithFail(instances);
-        DendogramRoot = new Node(null);
-        DendogramRoot.setId("root");
         
         //replace missing value
         finalCluster.deleteWithMissingClass();
@@ -69,7 +68,7 @@ public class MyAgnes extends AbstractClusterer{
             values.addElement(String.valueOf(j));
         }
         finalCluster.insertAttributeAt(new Attribute("Cluster", values), finalCluster.numAttributes());
-
+        
         List<Item> edges = new ArrayList<>();
         EuclideanDistance euclidDistance = new EuclideanDistance();
         euclidDistance.setInstances(finalCluster);
@@ -81,16 +80,39 @@ public class MyAgnes extends AbstractClusterer{
         }
         Collections.sort(edges);
         
+        Node[] nodes = new Node[finalCluster.numInstances()];
+        ori = new Node[finalCluster.numInstances()];
+        for (int i = 0; i < finalCluster.numInstances(); i++) {
+            nodes[i] = new Node(true, finalCluster.instance(i).toString());
+            ori[i] = nodes[i];
+        }
+        
         dsu = new DisjoinSetUnion(finalCluster.numInstances());
         int clusterNow = finalCluster.numInstances();
         for (Item item : edges) {
             //System.out.println(item.dist + " " + item.index_i + " " + item.index_j);
             if (dsu.find(item.index_i) != dsu.find(item.index_j)) {
+                Node a = nodes[dsu.find(item.index_i)];
+                Node b = nodes[dsu.find(item.index_j)];
                 dsu.merge(item.index_i, item.index_j);
+                Node dad = new Node(false, "");
+                dad.addChild(a);
+                dad.addChild(b);
+                nodes[dsu.find(item.index_i)] = dad;
                 //System.out.println("merge " + item.index_i + " " + item.index_j + " " + dsu.getSize(item.index_i));
                 clusterNow--;
             }
             if (clusterNow <= numberCluster) break;
+        }
+        
+        boolean[] done = new boolean[finalCluster.numInstances()];
+        this.root = new Node(false, "");
+        for (int i = 0; i < finalCluster.numInstances(); i++) {
+            int root = dsu.find(i);
+            if (!done[root]) {
+                done[root] = true;
+                this.root.addChild(nodes[root]);
+            }
         }
     }
 
@@ -111,12 +133,12 @@ public class MyAgnes extends AbstractClusterer{
             }
             finalCluster.instance(i).setValue(finalCluster.numAttributes()-1, String.valueOf(ptCluster[root]));
         }
-        for (Instance i : finalCluster){
-            //System.out.println(i.toString());
+        for (int i = 0; i < finalCluster.numInstances(); i++) {
+            ori[i].setCaption(finalCluster.instance(i).toString());
         }
-        System.out.println("Dendogram :");
-        printTree(DendogramRoot, "|____");
-        System.out.println("");
+        
+        List<Integer> at = new ArrayList<>();
+        root.printRoot();
         
         done = new boolean[finalCluster.numInstances()];
         pt = 0;
@@ -132,18 +154,4 @@ public class MyAgnes extends AbstractClusterer{
         }
     }
     
-     
-    private static Node addChild(Node parent, String id) {
-        Node node = new Node(parent);
-        node.setId(id);
-        parent.getChildren().add(node);
-        return node;
-    }
-
-    private static void printTree(Node node, String appender) {
-        System.out.println(appender + node.getId());
-        for (Node each : node.getChildren()) {
-            printTree(each, appender + appender);
-        }
-    }
 }
