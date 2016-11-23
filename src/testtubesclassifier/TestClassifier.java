@@ -33,7 +33,7 @@ public class TestClassifier {
         double accuracy = 0.0f;
 
         // Training
-        DataSource dt = new DataSource("weather.numeric.arff");
+        DataSource dt = new DataSource("weather.nominal.arff");
         Instances trainDataset = dt.getDataSet();
         trainDataset.setClassIndex(trainDataset.numAttributes()-1);
 
