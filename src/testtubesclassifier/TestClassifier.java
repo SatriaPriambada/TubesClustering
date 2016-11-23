@@ -29,6 +29,9 @@ public class TestClassifier {
         Scanner sc = new Scanner(System.in);
         String input = sc.nextLine();
         
+        System.out.println("Enter number of cluster");
+        int numCluster = Integer.parseInt(sc.nextLine());
+        
         int correctPrediction = 0;
         double accuracy = 0.0f;
 
@@ -45,11 +48,11 @@ public class TestClassifier {
         String[] options = new String[40];
         options[0] = "-t dt";
         if (input.equals("myKMeans")){
-            myKMeans classifierKMeans = new myKMeans(2);
+            MyKmeans classifierKMeans = new MyKmeans(numCluster);
             classifierKMeans.buildClusterer(trainDataset);
             classifierKMeans.printClusterResult();
         } else if (input.equals("myAgnes")){
-            myAgnes classifierAgnes = new myAgnes(2);
+            MyAgnes classifierAgnes = new MyAgnes(numCluster);
             classifierAgnes.buildClusterer(trainDataset);
             classifierAgnes.printClusterResult();
         }
