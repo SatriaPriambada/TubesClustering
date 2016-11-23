@@ -18,9 +18,14 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  * @author Satria
  */
 public class myAgnes extends AbstractClusterer{
-    private int numberCluster = 0;
+    private int numberCluster;
     private Instances finalCluster;
     private Node DendogramRoot = null;
+    
+    public myAgnes(int numCluster){
+        numberCluster = numCluster;
+    }
+    
     @Override
     public void buildClusterer(Instances i) throws Exception {
         //initalization
@@ -31,16 +36,17 @@ public class myAgnes extends AbstractClusterer{
         DendogramRoot.setId("root");
         
         //replace missing value
-        Filter replaceMisVal = new ReplaceMissingValues();
-        finalCluster = Filter.useFilter(i, replaceMisVal);
+        finalCluster.deleteWithMissingClass();
         
+        //adding the cluster value while not convergen using means of all cluster
+        FastVector values = new FastVector();
+        for (int j = 0; j < numberCluster; j++) {
+            values.addElement(String.valueOf(j));
+        }
+        finalCluster.insertAttributeAt(new Attribute("Cluster", values), finalCluster.numAttributes());
+
         //count the distance matrix
         
-        //adding the cluster value while not convergen
-        FastVector values = new FastVector();
-        //values.addElement("A");
-        
-        finalCluster.insertAttributeAt(new Attribute("Cluster", values), finalCluster.numAttributes());
     }
 
     @Override

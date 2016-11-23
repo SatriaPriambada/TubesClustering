@@ -33,7 +33,7 @@ public class TestClassifier {
         double accuracy = 0.0f;
 
         // Training
-        DataSource dt = new DataSource("weather.nominal.arff");
+        DataSource dt = new DataSource("weather.numeric.arff");
         Instances trainDataset = dt.getDataSet();
         trainDataset.setClassIndex(trainDataset.numAttributes()-1);
 
@@ -45,11 +45,11 @@ public class TestClassifier {
         String[] options = new String[40];
         options[0] = "-t dt";
         if (input.equals("myKMeans")){
-            myKMeans classifierKMeans = new myKMeans();
+            myKMeans classifierKMeans = new myKMeans(2);
             classifierKMeans.buildClusterer(trainDataset);
             classifierKMeans.printClusterResult();
         } else if (input.equals("myAgnes")){
-            myAgnes classifierAgnes = new myAgnes();
+            myAgnes classifierAgnes = new myAgnes(2);
             classifierAgnes.buildClusterer(trainDataset);
             classifierAgnes.printClusterResult();
         }
