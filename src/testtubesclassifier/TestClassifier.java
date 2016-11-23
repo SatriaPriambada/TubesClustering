@@ -45,11 +45,11 @@ public class TestClassifier {
         String[] options = new String[40];
         options[0] = "-t dt";
         if (input.equals("myKMeans")){
-            myKMeans classifierKMeans = new myKMeans(2);
+            MyKmeans classifierKMeans = new MyKmeans(2);
             classifierKMeans.buildClusterer(trainDataset);
             classifierKMeans.printClusterResult();
         } else if (input.equals("myAgnes")){
-            myAgnes classifierAgnes = new myAgnes(2);
+            MyAgnes classifierAgnes = new MyAgnes(2);
             classifierAgnes.buildClusterer(trainDataset);
             classifierAgnes.printClusterResult();
         }

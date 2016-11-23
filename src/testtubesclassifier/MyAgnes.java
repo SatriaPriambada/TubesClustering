@@ -17,12 +17,12 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  *
  * @author Satria
  */
-public class myAgnes extends AbstractClusterer{
+public class MyAgnes extends AbstractClusterer{
     private int numberCluster;
     private Instances finalCluster;
     private Node DendogramRoot = null;
     
-    public myAgnes(int numCluster){
+    public MyAgnes(int numCluster){
         numberCluster = numCluster;
     }
     

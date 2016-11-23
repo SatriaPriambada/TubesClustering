@@ -23,11 +23,11 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
  *
  * @author Satria
  */
-public class myKMeans extends AbstractClusterer{
+public class MyKmeans extends AbstractClusterer{
     private int numberCluster;
     private Instances finalCluster;
     
-    public myKMeans(int numCluster){
+    public MyKmeans(int numCluster){
         numberCluster = numCluster;
     }
     @Override
