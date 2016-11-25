@@ -34,6 +34,8 @@ public class TestClassifier {
         
         int correctPrediction = 0;
         double accuracy = 0.0f;
+        
+        long startTime = System.currentTimeMillis();
 
         // Training
         DataSource dt = new DataSource("sip.arff");
@@ -56,5 +58,8 @@ public class TestClassifier {
             classifierAgnes.buildClusterer(trainDataset);
             classifierAgnes.printClusterResult();
         }
+        
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Elapsed time was " + (stopTime - startTime) + " miliseconds.");
     }
 }
